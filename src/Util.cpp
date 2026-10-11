@@ -93,7 +93,7 @@ std::wstring IsoUtcNow(int offsetSeconds) {
 bool ParseIsoUtc(const std::wstring& s, FILETIME* ft) {
     SYSTEMTIME st = {};
     unsigned y = 0, mo = 0, d = 0, h = 0, mi = 0, se = 0;
-    if (swscanf(s.c_str(), L"%4u-%2u-%2uT%2u:%2u:%2u", &y, &mo, &d, &h, &mi, &se) != 6) return false;
+    if (swscanf_s(s.c_str(), L"%4u-%2u-%2uT%2u:%2u:%2u", &y, &mo, &d, &h, &mi, &se) != 6) return false;
     st.wYear = (WORD)y; st.wMonth = (WORD)mo; st.wDay = (WORD)d;
     st.wHour = (WORD)h; st.wMinute = (WORD)mi; st.wSecond = (WORD)se;
     return SystemTimeToFileTime(&st, ft) != FALSE;
