@@ -27,3 +27,6 @@ if ($LASTEXITCODE -eq 1 -and $out -like '*TokenError*') { Write-Host 'OK    fals
 else { Write-Host "FEHLER falsche Audience`n$out"; $failed++ }
 
 if ($failed) { throw "$failed Test(s) fehlgeschlagen" }
+
+Write-Host "Alle Tests bestanden."
+exit 0
