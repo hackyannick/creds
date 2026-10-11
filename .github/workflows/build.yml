@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  windows-msvc:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Konfigurieren
+        run: cmake -B build -A x64
+      - name: Bauen
+        run: cmake --build build --config Release
+      - name: Tests (Token-Auswertung)
+        shell: pwsh
+        run: ./tests/run-samples.ps1 -Cli build/Release/adfscreds-cli.exe
+      - name: Paket zusammenstellen
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item build/Release/ADFSCreds.dll, build/Release/adfscreds-cli.exe dist/
+          Copy-Item scripts/*.ps1, config/*.reg, README.md dist/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ADFSCreds-x64
+          path: dist/
+
+  mingw-cross:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: MinGW installieren
+        run: sudo apt-get update && sudo apt-get install -y g++-mingw-w64-x86-64-posix
+      - name: Bauen
+        run: |
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=cmake-mingw.cmake -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -j

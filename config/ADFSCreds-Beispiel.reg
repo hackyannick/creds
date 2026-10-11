@@ -1,0 +1,49 @@
+Windows Registry Editor Version 5.00
+
+; Beispielkonfiguration für ADFSCreds.  Alle Werte können auch per GPO unter
+; HKLM\SOFTWARE\Policies\ADFSCreds gesetzt werden (hat Vorrang).
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\ADFSCreds]
+; --- Pflicht ---
+"AdfsUrl"="https://sts.firma.de"
+"RelyingParty"="urn:adfscreds:windows"
+
+; --- ADFS ---
+; "max" wird zu "max@firma.de" ergänzt
+"UpnSuffix"="firma.de"
+; SAML2 (Standard) oder SAML1
+"TokenType"="SAML2"
+"TimeoutSeconds"=dword:0000000f
+; optional: SHA-1-Fingerabdrücke des TLS-Zertifikats, getrennt durch ';'
+;"PinnedCertThumbprints"="0123456789ABCDEF0123456789ABCDEF01234567"
+;"Proxy"="proxy.firma.de:8080"
+
+; --- Zuordnung ---
+"LocalUserClaim"="http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
+;"FullNameClaim"="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+
+; --- Berechtigungen ---
+"AdminClaim"="http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+; Gruppen, deren Mitglieder lokale Administratoren werden (getrennt durch ';')
+"AdminValues"="Client-Admins"
+"RemoveAdminIfNotMember"=dword:00000000
+; optional: Anmeldung nur mit bestimmtem Claim-Wert
+;"RequiredClaim"="http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+;"RequiredValues"="Notebook-Benutzer"
+
+; --- Verhalten ---
+"CreateLocalUsers"=dword:00000001
+"AllowOfflineLogon"=dword:00000001
+; 0 = bisheriges lokales Kennwort abfragen (empfohlen), 1 = sofort zurücksetzen
+"PasswordMismatchAction"=dword:00000000
+; 1 = Windows-Kennwort-Kachel ausblenden (nicht im abgesicherten Modus / bei RDP)
+"HideOtherProviders"=dword:00000000
+;"ExcludedUsers"="support;notfall"
+
+; --- Oberfläche ---
+"Title"="Anmelden mit Firmenkonto"
+"HelpText"="Bitte mit dem Firmenkennwort anmelden."
+;"TileImage"="C:\\ProgramData\\ADFSCreds\\logo.bmp"
+
+; 1 = Fehler, 2 = Warnungen, 3 = Info, 4 = Debug (Claims werden geloggt)
+"LogLevel"=dword:00000003
